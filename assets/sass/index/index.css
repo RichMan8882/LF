@@ -1,0 +1,179 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "微軟正黑體";
+  }
+  .container {
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .bg-w {
+    background-color: #fff;
+  }
+  .banner {
+    width: 100%;
+  }
+  .banner-box {
+    padding: 10px 5px;
+  }
+  .banner-box img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  .tcom {
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+  }
+  .tcom-box {
+    width: 20%;
+    padding: 2%;
+    font-size: 13px;
+    margin: 5px 0;
+    text-align: center;
+  }
+  .tcom-box img {
+    width: 100%;
+  }
+  
+  .intelligent {
+    width: 100%;
+    padding: 10px;
+  }
+  .intelligent-text {
+    padding: 8px 0;
+  }
+  .youtube {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .youtube-item {
+    width: 32%;
+  }
+  .youtube-item img {
+    width: 100%;
+  }
+  .communication {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+  }
+  .communication-text {
+    width: 70%;
+  }
+  .communication-img {
+    width: 30%;
+  }
+  .communication-img img {
+    width: 100%;
+  }
+  .Vision {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+  }
+  .Vision-text {
+    width: 70%;
+    padding: 8px 0;
+  }
+  .Vision-img {
+    width: 30%;
+  }
+  .Vision-img img {
+    width: 100%;
+  }
+  .background {
+    width: 100%;
+    display: flex;
+  }
+  .enterprise {
+    width: 100%;
+    background-image: url('https://upload.comethico.com/uploads/1729586630502.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  .enterprise-title {
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 24px;
+    background-color: #ffffff61;
+  }
+  .enterprise-text {
+    width: 100%;
+    padding: 10px 50px;
+    background-color: #ffffff61;
+  }
+  .Activity {
+    width: 100%;
+    padding: 8px 10px;
+  }
+  .Activity-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .Activity-img {
+    width: 32%;
+  }
+  .Activity-img img {
+    width: 100%;
+  }
+  .bgc-gray {
+    width: 100%;
+    background-color: #ececec;
+  }
+  .bgc-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .bgc-box1 {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .bgc-img {
+    width: 32%;
+    text-align: center;
+  }
+  .bgc-img img {
+    width: 60%;
+  }
+  .bgc-text {
+    width: 32%;
+    text-align: center;
+    padding: 0px 60px;
+  }
+  .video {
+    width: 100%;
+    height: auto;
+  }
+  .video video {
+    width: 100%;
+  }
+  .video-title {
+    width: 100%;
+    text-align: center;
+    padding: 10px 5px;
+    font-size: 20px;
+  }
+  
+.bgc-img img{
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 768px){
+    .bgc-text{
+        padding: 0px 12px;
+    }
+}

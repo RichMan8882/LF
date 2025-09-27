@@ -1,0 +1,26 @@
+$mobile-header-height: 69px
+$desktop-header-height: 100px
+$layout-md-breakpoint: 1024px
+$layout-lg-breakpoint: 1440px
+$header-z-index: 2000
+$banner-text-right-z-index: 1001
+$banner-cover-z-index: 1002
+$banner-text-left-z-index: 1003
+$banner-button-z-index: 1004
+
+@mixin banner-text($text-color, $stroke-width, $stroke-color)
+  -webkit-text-fill-color: $text-color
+  -webkit-text-stroke: $stroke-width $stroke-color
+
+@mixin same-size-text($size)
+  font-size: $size
+  line-height: $size
+
+@mixin text-family()
+  font-family: Roboto, "微軟正黑體", Helvetica, Arial, sans-serif !important
+
+@mixin banner-height()
+  width: 100vw
+  height: 100dvh
+  @media screen and (min-width: $layout-md-breakpoint)
+    height: 100dvh
