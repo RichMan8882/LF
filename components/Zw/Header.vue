@@ -204,7 +204,7 @@ const isMenu = ref(false)
   animation: fixed-to .8s ease-out forwards
 header
   position: relative
-  z-index: 5000
+  z-index: 500
   top: 0
   width: 100%
   height: auto
