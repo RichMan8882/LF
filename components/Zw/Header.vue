@@ -119,7 +119,7 @@ const isMenu = ref(false)
       <div class="headerMobileright">
         <div v-if="!isLogin()" class="resbtn" @click="navigateTo('/register')">
           <div class="user">
-            辦理到職
+            加入我們
             <svg class="inner-dashed-border" height="100%" width="100%" preserveAspectRatio="none">
               <rect width="100%" height="100%"></rect>
             </svg>
@@ -159,9 +159,9 @@ const isMenu = ref(false)
         <div class="ir-navs-item" :class="props.activeUrl == '/guardian' ? 'active' : ''">
           <a @click="navigateTo('/guardian')">致敬守護者</a>
         </div>
-        <div class="ir-navs-item" :class="props.activeUrl == '/login' ? 'active' : ''" v-if="!isLogin()">
+        <!-- <div class="ir-navs-item" :class="props.activeUrl == '/login' ? 'active' : ''" v-if="!isLogin()">
           <a @click="navigateTo('/login')">加入我們</a>
-        </div>
+        </div> -->
         <div class="ir-navs-item" :class="props.activeUrl == '/founder' ? 'active' : ''">
           <a @click="navigateTo('/founder')">創辦人簡介</a>
         </div>
@@ -170,7 +170,12 @@ const isMenu = ref(false)
           <a v-if="isLogin()" class="ir-link" @click="navigateTo('/user/info')"><span>職員中心</span></a>
         </div>
         <div class="ir-navs-item">
-          <div @click="navigateTo('/game')" class="user">開始測試
+          <div @click="navigateTo('/game')" class="user" v-if="!isLogin()">加入我們
+            <svg class="inner-dashed-border" height="100%" width="100%" preserveAspectRatio="none">
+              <rect width="100%" height="100%"></rect>
+            </svg>
+          </div>
+          <div @click="navigateTo('/game')" class="user" v-else>開始測試
             <svg class="inner-dashed-border" height="100%" width="100%" preserveAspectRatio="none">
               <rect width="100%" height="100%"></rect>
             </svg>
