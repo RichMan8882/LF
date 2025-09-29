@@ -159,15 +159,15 @@ const isMenu = ref(false)
         <div class="ir-navs-item" :class="props.activeUrl == '/guardian' ? 'active' : ''">
           <a @click="navigateTo('/guardian')">致敬守護者</a>
         </div>
-        <div class="ir-navs-item" :class="props.activeUrl == '/login' ? 'active' : ''">
+        <div class="ir-navs-item" :class="props.activeUrl == '/login' ? 'active' : ''" v-if="!isLogin()">
           <a @click="navigateTo('/login')">加入我們</a>
         </div>
         <div class="ir-navs-item" :class="props.activeUrl == '/founder' ? 'active' : ''">
           <a @click="navigateTo('/founder')">創辦人簡介</a>
         </div>
         <div class="ir-navs-item">
-          <a v-if="!isLogin()" class="ir-link" @click="navigateTo('/login')"><span>職員登入</span></a>
-          <a v-else class="ir-link" @click="navigateTo('/user/info')"><span>職員中心</span></a>
+          <!-- <a  class="ir-link" @click="navigateTo('/login')"><span>職員登入</span></a> -->
+          <a v-if="isLogin()" class="ir-link" @click="navigateTo('/user/info')"><span>職員中心</span></a>
         </div>
         <div class="ir-navs-item">
           <div @click="navigateTo('/game')" class="user">開始測試
