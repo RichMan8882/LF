@@ -118,7 +118,8 @@ export default defineNuxtConfig({
       PLEDGESOCKETURL: 'wss://pledgesocket.comethike.com:8443',
       APIBASE: 'https://bpapi2.comethike.com',
       // siteId: '657fef28c02bc92e35075322'
-      siteId: '66aa34bba21fc2944d153145'
+      siteId: '68d7aa6554e836bf431c3cdc'
+      // siteId: '66aa34bba21fc2944d153145'
     }
   },
 

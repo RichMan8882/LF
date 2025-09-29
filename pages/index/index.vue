@@ -357,7 +357,6 @@ const onClosePopup = () => {
         </div>
       </div>
     </div>
-    <button class="nav-up"><i class="arrow-right"></i></button>
     <ZwFooter />
   </div>
 </template>
