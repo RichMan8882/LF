@@ -475,7 +475,6 @@ const onClosePopup = () => {
         animation: fadeSlideIn2 1s ease-out forwards
         animation-delay: 0.5s
     .bg1-right
-      background: url(@/assets/image/index/home-bg.png) no-repeat center / 100% 100%
       min-width: 60%
       width: 60%
       padding-inline: 12px
