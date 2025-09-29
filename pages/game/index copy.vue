@@ -179,7 +179,7 @@ const checkBetData = () => {
                  response.data.openAt
                )} </p>
              `,
-              `${t('下單成功')}`,
+              `${t('上傳成功')}`,
               {
                 confirmButtonText: `${t('確認')}`,
                 center: true,

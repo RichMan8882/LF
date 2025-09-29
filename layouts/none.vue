@@ -62,9 +62,9 @@ body {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  font-family: '-apple-system', 'BlinkMacSystemFont', 'sans-serif',
+  /* font-family: '-apple-system', 'BlinkMacSystemFont', 'sans-serif',
     'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica', 'Arial',
-    'sans-serif';
+    'sans-serif'; */
 }
 
 html {

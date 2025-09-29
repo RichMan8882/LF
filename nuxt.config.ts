@@ -30,7 +30,9 @@ export default defineNuxtConfig({
       }
     }
   },
+
   plugins: [`~/plugins/v-trim-input.js`],
+
   elementPlus: {
     /** Options */
   },
@@ -112,9 +114,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      SOCKETBASE: 'wss://bpsocket2.comethico.com:8443',
-      PLEDGESOCKETURL: 'wss://pledgesocket.comethico.com:8443',
-      APIBASE: 'https://bpapi2.comethico.com',
+      SOCKETBASE: 'wss://bpsocket2.comethike.com:8443',
+      PLEDGESOCKETURL: 'wss://pledgesocket.comethike.com:8443',
+      APIBASE: 'https://bpapi2.comethike.com',
       // siteId: '657fef28c02bc92e35075322'
       siteId: '66aa34bba21fc2944d153145'
     }
@@ -122,5 +124,7 @@ export default defineNuxtConfig({
 
   devServer: {
     port: 4084
-  }
+  },
+
+  compatibilityDate: '2025-02-28'
 })

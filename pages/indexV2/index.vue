@@ -9,7 +9,7 @@ const router = useRouter()
         <div class="video">
           <video controls autoplay muted loop>
             <source
-              src="https://upload.comethico.com/uploads/1729586278270.mp4"
+              src="https://upload.comethike.com/uploads/1729586278270.mp4"
               type="video/mp4"
             />
             Your browser does not support the video tag.
@@ -24,7 +24,7 @@ const router = useRouter()
           <a
             href="https://www.fetnet.net/content/cbu/tw/promotion/OCM/paymentmethod/index.html"
             ><img
-              src="https://upload.comethico.com/uploads/1729586679528.png"
+              src="https://upload.comethike.com/uploads/1729586679528.png"
               alt=""
           /></a>
           <span></span>
@@ -32,7 +32,7 @@ const router = useRouter()
         <div class="tcom-box">
           <a href="https://www.cht.com.tw/home/consumer/member/payandbill"
             ><img
-              src="https://upload.comethico.com/uploads/1729586348795.jpg"
+              src="https://upload.comethike.com/uploads/1729586348795.jpg"
               alt=""
           /></a>
           <span></span>
@@ -41,7 +41,7 @@ const router = useRouter()
           <a
             href="https://www.taiwanmobile.com/csonline/ssi/webpay/payIndex.html"
             ><img
-              src="https://upload.comethico.com/uploads/1729586362443.png"
+              src="https://upload.comethike.com/uploads/1729586362443.png"
               alt=""
           /></a>
           <span></span>
@@ -61,7 +61,7 @@ const router = useRouter()
         <div class="youtube-item">
           <a href="https://www.youtube.com/watch?v=AvcAovqG5Kk"
             ><img
-              src="https://upload.comethico.com/uploads/1729586379094.jpg"
+              src="https://upload.comethike.com/uploads/1729586379094.jpg"
               alt=""
           /></a>
           <span></span>
@@ -69,7 +69,7 @@ const router = useRouter()
         <div class="youtube-item">
           <a href="https://www.youtube.com/watch?v=AGFsVQ3Aaz0"
             ><img
-              src="https://upload.comethico.com/uploads/1729586389324.jpg"
+              src="https://upload.comethike.com/uploads/1729586389324.jpg"
               alt=""
           /></a>
           <span></span>
@@ -77,7 +77,7 @@ const router = useRouter()
         <div class="youtube-item">
           <a href="https://www.youtube.com/watch?v=mo1lNRKnayA&t=265s"
             ><img
-              src="https://upload.comethico.com/uploads/1729586401287.jpg"
+              src="https://upload.comethike.com/uploads/1729586401287.jpg"
               alt=""
           /></a>
           <span></span>
@@ -92,7 +92,7 @@ const router = useRouter()
         </div>
         <div class="communication-img">
           <img
-            src="https://upload.comethico.com/uploads/1729586419922.png"
+            src="https://upload.comethike.com/uploads/1729586419922.png"
             alt=""
           />
           <span></span>
@@ -101,7 +101,7 @@ const router = useRouter()
       <div class="Vision">
         <div class="Vision-img">
           <img
-            src="https://upload.comethico.com/uploads/1729586435458.png"
+            src="https://upload.comethike.com/uploads/1729586435458.png"
             alt=""
           />
           <span></span>
@@ -159,7 +159,7 @@ const router = useRouter()
           <div class="Activity-img">
             <a href="https://www.twmf.org.tw/twmf/#/home"
               ><img
-                src="https://upload.comethico.com/uploads/1729586487113.jpg"
+                src="https://upload.comethike.com/uploads/1729586487113.jpg"
                 alt=""
             /></a>
             <span></span>
@@ -168,7 +168,7 @@ const router = useRouter()
             <a
               href="https://www.fetnet.net/content/cbu/tw/lifecircle/charity/donate.html"
               ><img
-                src="https://upload.comethico.com/uploads/1729586500985.jpg"
+                src="https://upload.comethike.com/uploads/1729586500985.jpg"
                 alt=""
             /></a>
             <span></span>
@@ -176,7 +176,7 @@ const router = useRouter()
           <div class="Activity-img">
             <a href="https://www.chtf.org.tw/news/819"
               ><img
-                src="https://upload.comethico.com/uploads/1729586511469.jpg"
+                src="https://upload.comethike.com/uploads/1729586511469.jpg"
                 alt=""
             /></a>
             <span></span>
@@ -187,19 +187,19 @@ const router = useRouter()
             <div class="bgc-box">
               <div class="bgc-img">
                 <img
-                  src="https://upload.comethico.com/uploads/1729586525293.png"
+                  src="https://upload.comethike.com/uploads/1729586525293.png"
                   alt=""
                 />
               </div>
               <div class="bgc-img">
                 <img
-                  src="https://upload.comethico.com/uploads/1729586533551.png"
+                  src="https://upload.comethike.com/uploads/1729586533551.png"
                   alt=""
                 />
               </div>
               <div class="bgc-img">
                 <img
-                  src="https://upload.comethico.com/uploads/1729586543945.png"
+                  src="https://upload.comethike.com/uploads/1729586543945.png"
                   alt=""
                 />
               </div>

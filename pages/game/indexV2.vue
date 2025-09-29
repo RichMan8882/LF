@@ -179,7 +179,7 @@ const checkBetData = () => {
                  response.data.openAt
                )} </p>
              `,
-              `${t('下單成功')}`,
+              `${t('上傳成功')}`,
               {
                 confirmButtonText: `${t('確認')}`,
                 center: true,
@@ -1097,11 +1097,11 @@ watch(socketCurrentRoundCountdown, (newValue) => {
                   />
                   <div class="button-row">
                     <div class="time-block">
-                      <div class="game-uid" v-if="symbol === 'LEAHD3M'">
+                      <div v-if="symbol === 'LEAHD3M'" class="game-uid">
                         <h6>{{ $lang('數據碼') }}</h6>
                         <b data-roundNum>: {{ betData.roundId }}</b>
                       </div>
-                      <div class="game-uid" v-else>
+                      <div v-else class="game-uid">
                         <h6>Grayscale Bitcoin Trust(BTC)</h6>
                         <b data-roundNum class="marginStyle"
                           >價格: {{ currentSelectSymbolPrice }}</b
@@ -1186,7 +1186,7 @@ watch(socketCurrentRoundCountdown, (newValue) => {
                                 ? `${t('上傳')}`
                                 : `${t('做多')}`
                             }}
-                            <span class="odds" v-if="symbol !== 'LEAHD3M'">{{
+                            <span v-if="symbol !== 'LEAHD3M'" class="odds">{{
                               gameOptionOdd(4)
                             }}</span>
                           </label>
@@ -1200,7 +1200,7 @@ watch(socketCurrentRoundCountdown, (newValue) => {
                                 ? `${t('下載')}`
                                 : `${t('做空')}`
                             }}
-                            <span class="odds" v-if="symbol !== 'LEAHD3M'">{{
+                            <span v-if="symbol !== 'LEAHD3M'" class="odds">{{
                               gameOptionOdd(5)
                             }}</span>
                           </label>
@@ -2243,7 +2243,7 @@ input {
       position: absolute
       left: 15%
       top: 77%
-      background-image: url('https://upload.comethico.com/uploads/1729609298938.png')
+      background-image: url('https://upload.comethike.com/uploads/1729609298938.png')
       background-size: contain
       background-repeat: no-repeat
       background-position: center

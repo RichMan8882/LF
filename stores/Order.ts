@@ -60,7 +60,7 @@ export const useOrderStore = defineStore('order', () => {
         let message = ''
         if (res.statusCode === 400) {
           ElNotification({
-            title: `${t('下注失敗')}`,
+            title: `${t('測試失敗')}`,
             type: 'error',
             showClose: false,
             message: `${t(res.data.message)}`
@@ -69,7 +69,7 @@ export const useOrderStore = defineStore('order', () => {
         }
         if (res.statusCode === 401) {
           ElNotification({
-            title: `${t('下注失敗')}`,
+            title: `${t('測試失敗')}`,
             type: 'error',
             showClose: false,
             message: `${t('請確認網路連線')}`

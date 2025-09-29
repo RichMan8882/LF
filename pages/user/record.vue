@@ -203,12 +203,15 @@ const hiddenAccountNo = (value) => {
   }
 }
 const formatMemo = (value: any) => {
-  const str = value.memo
-    .replace('會員投注', '會員購買')
-    .replace('投注-', '購買-')
-    .replace('下注', '購買')
-    .replace('輸贏', '盈虧')
-    .replace('投注本金', '購買本金')
+  const str = value
+    .replace('會員投注', '職員')
+    .replace('[漲跌-上期]', '')
+    .replace('漲跌-上期', '')
+    .replace('[投注成功]', '')
+    .replace('漲', '上傳')
+    .replace('跌', '下載')
+    .replace('投注-', '')
+    .replace(/結算結果.*/, '')
   return str
 }
 </script>
@@ -281,10 +284,11 @@ const formatMemo = (value: any) => {
             >
               <th>{{ formatDate(item.createdAt) }}</th>
               <th>
-                <div>
+                <!-- <div>
                   {{ $lang('類型') }}:{{ transactionRecordType(item.type) }}
-                </div>
-                <div>{{ $lang('備註') }}:{{ item.memo }}</div>
+                </div> -->
+                <div>{{ formatMemo(item.memo) }}</div>
+                <!-- <div>{{ $lang('備註') }}:{{ formatMemo(item.memo) }}</div> -->
               </th>
               <th>{{ new Intl.NumberFormat('zh-TW').format(item.amount) }}</th>
             </tr>

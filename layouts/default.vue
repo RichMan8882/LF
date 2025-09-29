@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // listen to locale change
 const { locale, setLocaleCookie } = useI18n()
+console.log(111)
 
 watch(locale, (val) => {
   setLocaleCookie(val)
@@ -45,7 +46,7 @@ await onMounted(() => {
   } else {
     console.log(`Debug mode env : `, process.env.NODE_ENV)
     if (process.env.NODE_ENV !== 'development') {
-      console.log = () => {}
+      console.log = () => { }
     }
   }
 
@@ -103,7 +104,7 @@ const routerName = (router: String) => {
     case 'register':
       return '登入'
     case 'user':
-      return '會員中心'
+      return '職員中心'
     case 'user-activity':
       return '優惠活動'
     case 'user-bank':
@@ -127,10 +128,13 @@ const routerName = (router: String) => {
   }
 }
 const siteStore = useSiteStore()
+console.log(siteStore.siteData.favicon, 'siteStore.siteData.favicon')
+
 useHead({
-  title: `${siteStore.siteData.title}- ${routerName(
-    router.currentRoute.value.name
-  )}`,
+  // title: `${siteStore.siteData.title}- ${routerName(
+  //   router.currentRoute.value.name
+  // )}`,
+  title: `${siteStore.siteData.title}`,
   link: [
     {
       rel: 'icon',
@@ -166,9 +170,10 @@ watch(
       router.currentRoute.value.name
     )
     useHead({
-      title: `${siteStore.siteData.title}- ${routerName(
-        router.currentRoute.value.name
-      )}`,
+      // title: `${siteStore.siteData.title}- ${routerName(
+      //   router.currentRoute.value.name
+      // )}`,
+      title: `${siteStore.siteData.title}`,
       link: [
         {
           rel: 'icon',
@@ -203,10 +208,11 @@ body {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  font-family: '-apple-system', 'BlinkMacSystemFont', 'sans-serif',
+  /* font-family: '-apple-system', 'BlinkMacSystemFont', 'sans-serif',
     'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica', 'Arial',
-    'sans-serif';
-  background-color: #0b1a21;
+    'sans-serif'; */
+
+  background-color: #ffffff;
   /* overflow: hidden; */
 }
 
@@ -219,6 +225,7 @@ html {
   /* overflow: -moz-hidden-unscrollable; */
   /* background-color: rgb(250 250 250); */
 }
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 
 ::-webkit-scrollbar {
@@ -227,6 +234,7 @@ html {
   background: transparent;
   /* make scrollbar transparent */
 }
+
 /* Hide scrollbar for IE, Edge and Firefox */
 
 /* *:not(input) { */
@@ -260,6 +268,7 @@ html {
   position: relative;
   margin: 0;
 }
+
 a {
   text-decoration: none;
 }

@@ -60,14 +60,8 @@ const verifySmsCode = async () => {
     </div>
     <div class="formSection">
       <div class="formContent">
-        <button
-          type="button"
-          :class="
-            isButtonDisabled ? 'buttonWhGreen btbDisabled' : 'buttonWhGreen'
-          "
-          :disabled="isButtonDisabled"
-          @click="getPhoneCode"
-        >
+        <button type="button" :class="isButtonDisabled ? 'buttonWhGreen btbDisabled' : 'buttonWhGreen'
+          " :disabled="isButtonDisabled" @click="getPhoneCode">
           <div v-if="!isButtonDisabled">
             <i class="fas fa-envelope"></i>
           </div>
@@ -88,9 +82,7 @@ const verifySmsCode = async () => {
           </div>
           <div class="input-classic">
             <div class="info-text">
-              <a :href="siteStore.chatbox" target="_blank"
-                >{{ $t('收不到驗證碼') }}?</a
-              >
+              <a :href="siteStore.chatbox" target="_blank">{{ $t('收不到驗證碼') }}?</a>
             </div>
           </div>
         </div>
@@ -105,6 +97,7 @@ const verifySmsCode = async () => {
 <style scoped lang="sass">
 @import '@/assets/sass/coin2.scss'
 .pages
+  
   @media screen and (max-width: 768px)
     padding: 10px
 </style>

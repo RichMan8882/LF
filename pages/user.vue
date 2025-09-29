@@ -73,7 +73,15 @@ watch(
 )
 const pledgeSocketStore = usePledgeSocketStore()
 
+const scrollTop = ref(0)
+const handleScroll = () => {
+  scrollTop.value = window.scrollY
+}
+
 await onMounted(async () => {
+  if (window) {
+    window.addEventListener('scroll', handleScroll)
+  }
   // 判斷gameType 是否有 5 pledge type
   if (siteStore.siteData?.gameType?.find((item: any) => item === 5)) {
     await pledgeSocketStore.startConnectWebSocket()
@@ -87,92 +95,73 @@ onBeforeUnmount(() => {
 })
 </script>
 <template>
-  <ZwHeader />
-  <div>
-    <!-- <div class="navBar">
-      <div class="left"></div>
-      <div class="right">
-        <a class="btn-login" @click="navigateTo('/user')"> 會員中心 </a>
-        <a class="btn-reg" @click="signout">登出</a>
-      </div>
-    </div> -->
-    <div class="userpage">
-      <div class="form-block">
-        <div class="gw template">
-          <div class="form-container big">
-            <input id="form-control" type="checkbox" hidden />
-            <div class="form-row">
-              <div class="left-block">
-                <label for="form-control" class="form-close">
-                  <i class="fas fa-long-arrow-alt-left"></i>
-                </label>
-                <a target="_blank" class="auth" @click="gameWindowOpen">
-                  <i class="fas fa-chart-line"></i>
-                  {{ $lang('理單介面') }}
-                </a>
-                <a
-                  v-if="
+  <client-only>
+    <ZwHeader :nav-fixed="scrollTop > 95" />
+    <div class="user-view">
+      <div class="userpage">
+        <div class="form-block">
+          <div class="gw template">
+            <div class="form-container big">
+              <input id="form-control" type="checkbox" hidden />
+              <div class="form-row">
+                <div class="left-block">
+                  <label for="form-control" class="form-close">
+                    <i class="fas fa-long-arrow-alt-left"></i>
+                  </label>
+                  <a target="_blank" class="auth" @click="gameWindowOpen">
+                    <i class="fas fa-chart-line"></i>
+                    {{ $lang('理單介面') }}
+                  </a>
+                  <a v-if="
                     siteStore.siteData?.gameType?.find(
                       (item: any) => item === 5
                     )
-                  "
-                  :class="checkPath('pledge')"
-                  @click="navigateTo(`/user/pledge`)"
-                >
-                  <i class="fas fa-coins"></i>
-                  {{ $lang('質押') }}
-                </a>
-                <a :class="checkPath('info')" @click="navigateTo(`/user/info`)">
-                  <i class="fas fa-user-circle"></i>
-                  {{ $lang('職員列表') }}
-                </a>
-                <!-- <a
+                  " :class="checkPath('pledge')" @click="navigateTo(`/user/pledge`)">
+                    <i class="fas fa-coins"></i>
+                    {{ $lang('質押') }}
+                  </a>
+                  <a :class="checkPath('info')" @click="navigateTo(`/user/info`)">
+                    <i class="fas fa-user-circle"></i>
+                    {{ $lang('職員列表') }}
+                  </a>
+                  <!-- <a
                   :class="checkPath('activity')"
                   @click="navigateTo(`/user/activity`)"
                 >
                   <i class="fas fa-gift"></i>
                   {{ $lang('優惠活動') }}
                 </a> -->
-                <a
-                  :class="checkPath('setting')"
-                  @click="navigateTo(`/user/setting`)"
-                >
-                  <i class="fab fa-whmcs"></i>
-                  {{ $lang('職員設定') }}
-                </a>
-                <!-- <a
+                  <a :class="checkPath('setting')" @click="navigateTo(`/user/setting`)">
+                    <i class="fab fa-whmcs"></i>
+                    {{ $lang('職員設定') }}
+                  </a>
+                  <!-- <a
                   :class="checkPath('deposit')"
                   @click="navigateTo(`/user/deposit`)"
                 >
                   <i class="fas fa-wallet"></i>
                   {{ $lang('置入資產') }}
                 </a> -->
-                <a
-                  :class="checkPath('withdraw') || checkPath('bank')"
-                  @click="navigateTo(`/user/withdraw`)"
-                >
-                  <i class="fas fa-wallet"></i>
-                  {{ $lang('薪資提款') }}
-                </a>
-                <!-- <a
+                  <a :class="checkPath('withdraw') || checkPath('bank')" @click="navigateTo(`/user/withdraw`)">
+                    <i class="fas fa-wallet"></i>
+                    {{ $lang('薪資提款') }}
+                  </a>
+                  <!-- <a
                 :class="checkPath('gamePage')"
                 @click="navigateTo(`/user/gamePage`)"
               >
                 <i class="fab fa-fantasy-flight-games"></i>
                 {{ $lang("其他交易") }}
               </a> -->
-                <!-- <a :class="checkPath('news')" @click="navigateTo(`/user/news`)">
+                  <!-- <a :class="checkPath('news')" @click="navigateTo(`/user/news`)">
                   <i class="far fa-comment-alt"></i>
                   {{ $lang('網站公告') }}
                 </a> -->
-                <a
-                  :class="checkPath('record')"
-                  @click="navigateTo(`/user/record`)"
-                >
-                  <i class="fas fa-history"></i>
-                  {{ $lang('交易紀錄') }}
-                </a>
-                <!-- <a
+                  <a :class="checkPath('record')" @click="navigateTo(`/user/record`)">
+                    <i class="fas fa-history"></i>
+                    {{ $lang('交易紀錄') }}
+                  </a>
+                  <!-- <a
                   :class="checkPath('message')"
                   class="message"
                   @click="navigateTo(`/user/message`)"
@@ -181,56 +170,38 @@ onBeforeUnmount(() => {
                   {{ $lang('站內訊息') }}
                   <span v-if="unreadMessage() > 0" class="badgeOpint"> </span>
                 </a> -->
-                <a :href="siteStore.chatbox" target="_blank">
-                  <i class="fas fa-headset"></i>
-                  {{ $lang('聯繫客服') }}
-                </a>
-              </div>
-              <div class="right-block">
-                <label for="form-control" class="form-btn">
-                  <i class="fas fa-list"></i>
-                </label>
-                <router-view></router-view>
+                  <a :href="siteStore.chatbox" target="_blank">
+                    <i class="fas fa-headset"></i>
+                    {{ $lang('聯繫客服') }}
+                  </a>
+                </div>
+                <div class="right-block">
+                  <label for="form-control" class="form-btn">
+                    <i class="fas fa-list"></i>
+                  </label>
+                  <router-view></router-view>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <footer class="footer">
-    <div class="footer-container">
-      <h2>
-        {{ $lang('聯絡我們') }}
-      </h2>
-
-      <div class="footer-body">
-        <div class="text" @click="router.push('/')">
-          {{ $lang('支援中心') }}
-        </div>
-        <div class="text" @click="router.push('/')">
-          {{ $lang('隱私權政策') }}
-        </div>
-      </div>
-    </div>
-
-    <p class="footer-support">
-      {{
-        $lang(
-          '建議使用Chrome 74.0.3729.169，Firefox 67.0.1，Safari 5.1.10或相容瀏覽器並具有1024 x 768（或更高）解析度的螢幕，以獲得最佳瀏覽體驗。'
-        )
-      }}
-    </p>
-  </footer>
+    <ZwFooter />
+  </client-only>
 </template>
 <style scoped lang="sass">
+.user-view
+  padding: 100px 0 0
+.pages
+  padding: 80px 0 
 @import '@/assets/sass/coin2.scss'
 .form-block
   min-height: 80dvh
   max-height: 100dvh
   overflow-y: auto
   @media screen and (max-width: 768px)
-    padding: 0 0 200px 0
+    padding: 0 0 100px 0
 input[type='checkbox']
   display: none
 </style>
@@ -246,9 +217,11 @@ input[type='checkbox']
 .form-row {
   cursor: pointer;
 }
+
 .message {
   position: relative;
 }
+
 .badgeOpint {
   background-color: #ff0000;
   color: #fff;

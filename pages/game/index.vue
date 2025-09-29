@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 // import
+import * as echarts from 'echarts'
+
 const { t } = useI18n()
 const siteStore = useSiteStore()
 const PlayerStore = usePlayerStore()
@@ -14,6 +16,7 @@ const timeoutId = ref(null)
 const hourDegrees = ref(0)
 const minuteDegrees = ref(0)
 const secondDegrees = ref(0)
+const chartRef = ref()
 // data
 const coinBoxChecked = ref(false)
 const record = ref({
@@ -168,13 +171,17 @@ const connectRecordList = computed(() => {
       return orderList.value
   }
 })
+const pingOpt = ref({
+  upAmount: 0,
+  downAmount: 0
+})
 const addBetGameType = (type: string) => {
   if (betData.value.option.includes(type)) {
     betData.value.option = betData.value.option.filter((item) => item !== type)
   } else {
     betData.value.option.push(type)
   }
-  console.log(betData.value.option)
+  console.log(betData.value.option, betData.value.option.includes(4))
 }
 const checkBetData = () => {
   if (!disableBet.value) {
@@ -209,7 +216,7 @@ const checkBetData = () => {
       }
       if (betData.value.amount === '') {
         ElNotification({
-          message: `${t('請輸入下單金額')}`,
+          message: `${t('請輸入數據數量')}`,
           type: 'error',
           showClose: false
         })
@@ -249,18 +256,23 @@ const checkBetData = () => {
           const response = await bet(betData.value)
           console.log('bet response', response)
           if (response.success) {
+            if (betData.value.option[0] == 4) {
+              pingOpt.value.upAmount += Number(betData.value.amount)
+            } else {
+              pingOpt.value.downAmount += Number(betData.value.amount)
+            }
             ElMessageBox.alert(
               `
-               <p style="margin:0 0 8px 0"> ${t('交易期別')}: ${response.data.roundNo} </p>
-               <p style="margin:0 0 8px 0"> ${t('交易金額')}: ${response.data.amount} </p>
-               <p style="margin:0 0 8px 0"> ${t('交易期別')}: ${gameOptionNameList(
+               <p style="margin:0 0 8px 0"> ${t('數據類別')}: ${response.data.roundNo} </p>
+               <p style="margin:0 0 8px 0"> ${t('數據包數量')}: ${response.data.amount} </p>
+               <p style="margin:0 0 8px 0"> ${t('數據類別')}: ${gameOptionNameList(
                  response.data.option
                )} </p>
                <p style="margin:0 0 8px 0"> ${t('時間')}: ${formatDate(
                  response.data.openAt
                )} </p>
              `,
-              `${t('下單成功')}`,
+              `${t('上傳成功')}`,
               {
                 confirmButtonText: `${t('確認')}`,
                 center: true,
@@ -402,10 +414,10 @@ const gameOptionName = (type: Number) => {
       return `${t('雙')}`
     case 4:
       // return `${t('漲')}`
-      return symbol.value === 'LEAHD3M' ? t('發送') : t('做多')
+      return symbol.value === 'LEAHD3M' ? t('上傳') : t('做多')
     case 5:
       // return `${t('跌')}`
-      return symbol.value === 'LEAHD3M' ? t('接收') : t('做空')
+      return symbol.value === 'LEAHD3M' ? t('下載') : t('做空')
     case 6:
       return `${t('反指標')}`
     default:
@@ -425,10 +437,10 @@ const gameResultName = (type: Number) => {
       return `${t('雙')}`
     case 4:
       // return `${t('漲')}`
-      return symbol.value === 'LEAHD3M' ? t('發送') : t('做多')
+      return symbol.value === 'LEAHD3M' ? t('上傳') : t('做多')
     case 5:
       // return `${t('跌')}`
-      return symbol.value === 'LEAHD3M' ? t('接收') : t('做空')
+      return symbol.value === 'LEAHD3M' ? t('下載') : t('做空')
     case 6:
       return `${t('和')}`
     default:
@@ -569,6 +581,7 @@ const startConnectWebSocket = async () => {
     switch (event) {
       case 'PRODUCT_UPDATE': {
         // console.log('PRODUCT_UPDATE', data)
+
         productList.value = data.result
         if (symbolData.value === null) {
           symbol.value = productList.value[0].symbol
@@ -579,6 +592,22 @@ const startConnectWebSocket = async () => {
       case 'ORDER_UPDATE': {
         // console.log('ORDER_UPDATE', data)
         socketOrderList.value = data.result
+        setTimeout(() => {
+          pingOpt.value.upAmount = 0
+          pingOpt.value.downAmount = 0
+          data.result.forEach((item) => {
+            if (item.status == 0) {
+              if (item.roundNo == betData.value.roundNo) {
+                if (item.option == 4) {
+                  pingOpt.value.upAmount += Number(item.amount)
+                }
+                if (item.option == 5) {
+                  pingOpt.value.downAmount += Number(item.amount)
+                }
+              }
+            }
+          })
+        }, 1000)
       }
       case 'KLINE_UPDATE': {
         // console.log('KLINE_UPDATE', data)
@@ -763,6 +792,8 @@ const sersTimer = ref('')
 const berTimer = ref('')
 const esTimer = ref('')
 
+const chartTimer = ref()
+const chartValue = ref(0)
 // 組件掛載時設置計時器並更新時間和倒數計時
 await onMounted(async () => {
   await startConnectWebSocket()
@@ -795,12 +826,10 @@ await onMounted(async () => {
   /** await Promise then  */
 
   const resetTimer = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId.value)
-    }
+    clearTimeout(timeoutId.value)
     timeoutId.value = setTimeout(
       () => {
-        navigateTo('/user')
+        navigateTo('/user/info')
       },
       siteStore.siteData?.gameCenterOutInterval
         ? siteStore.siteData?.gameCenterOutInterval * 60 * 1000
@@ -830,8 +859,87 @@ await onMounted(async () => {
     1000
   )
   esTimer.value = setInterval(() => updateCountingNumber('es', 70, 90, 1), 1000)
+  updateChartsData()
+  chartTimer.value = setInterval(() => {
+    if (pingOpt.value.downAmount || pingOpt.value.upAmount) {
+      chartValue.value = Number((Math.random() * (30 - 20) + 20).toFixed(2))
+      updateChartsData()
+    }
+  }, 1000)
 })
-
+// const noBetValue = ref(Number((Math.random() * (30 - 20) + 20).toFixed(2)))
+const updateChartsData = () => {
+  const option = {
+    series: [
+      {
+        type: 'gauge',
+        startAngle: 220,
+        endAngle: -40,
+        min: 0,
+        max: 50,
+        splitNumber: 10,
+        itemStyle: {
+          color: '#58D9F9',
+          shadowColor: 'rgba(0,138,255,0.45)',
+          shadowBlur: 10,
+          shadowOffsetX: 2,
+          shadowOffsetY: 2
+        },
+        progress: {
+          show: true,
+          roundCap: true,
+          width: 18
+        },
+        pointer: {
+          icon: 'path://M2090.36389,615.30999 L2090.36389,615.30999 C2091.48372,615.30999 2092.40383,616.194028 2092.44859,617.312956 L2096.90698,728.755929 C2097.05155,732.369577 2094.2393,735.416212 2090.62566,735.56078 C2090.53845,735.564269 2090.45117,735.566014 2090.36389,735.566014 L2090.36389,735.566014 C2086.74736,735.566014 2083.81557,732.63423 2083.81557,729.017692 C2083.81557,728.930412 2083.81732,728.84314 2083.82081,728.755929 L2088.2792,617.312956 C2088.32396,616.194028 2089.24407,615.30999 2090.36389,615.30999 Z',
+          length: '65%',
+          width: 20,
+          offsetCenter: [0, '5%']
+        },
+        axisLine: {
+          roundCap: true,
+          lineStyle: {
+            width: 18
+          }
+        },
+        axisTick: {
+          splitNumber: 2,
+          lineStyle: {
+            width: 2,
+            color: '#fff'
+          }
+        },
+        splitLine: {
+          length: 8,
+          lineStyle: {
+            width: 2,
+            color: '#fff'
+          }
+        },
+        axisLabel: {
+          distance: 20,
+          color: '#fff',
+          fontSize: 14
+        },
+        detail: {
+          formatter: function (value) {
+            return 'ping' + value
+          },
+          color: '#fff',
+          fontSize: 15,
+          show: true
+        },
+        data: [
+          {
+            value: chartValue.value
+          }
+        ]
+      }
+    ]
+  }
+  const myChart = echarts.init(chartRef.value)
+  myChart.setOption(option)
+}
 // 組件卸載時清除計時器
 onUnmounted(() => {})
 
@@ -840,6 +948,7 @@ onBeforeUnmount(() => {
   clearInterval(sersTimer)
   clearInterval(berTimer)
   clearInterval(esTimer)
+  clearInterval(chartTimer.value)
   reconnected.value = false
   // console.log('closeWebSocket', reconnected.value)
   closeWebSocket()
@@ -912,6 +1021,25 @@ const formatHour = (timestamp: string) => {
 }
 const centerDialogVisible = ref(false)
 const verifyNumber = ref('')
+const progress = ref(0)
+
+const totalDuration = 60 // 總時間是 60 秒
+
+// 監聽 socketCurrentRoundCountdown 的變化，並更新進度條
+watch(socketCurrentRoundCountdown, (newValue) => {
+  if (newValue >= 0 && newValue <= totalDuration) {
+    progress.value = ((totalDuration - newValue) / totalDuration) * 100 // 進度條會隨時間遞增
+  } else {
+    progress.value = 0 // 如果時間超過範圍，進度條保持為 0
+  }
+  if (newValue == 0) {
+    // noBetValue.value = Number((Math.random() * (30 - 20) + 20).toFixed(2))
+    pingOpt.value.downAmount = 0
+    pingOpt.value.upAmount = 0
+    chartValue.value = 0
+    updateChartsData()
+  }
+})
 </script>
 
 <template>
@@ -920,9 +1048,9 @@ const verifyNumber = ref('')
     <header>
       <div class="b-container mobile-pad">
         <div class="header-row">
-          <div class="left-block">
+          <div class="left-block" @click="navigateTo('/')">
             <div class="logo">
-              <img :src="siteStore.siteData.logo" alt="" data-webLogo />
+              <!-- <img :src="siteStore.siteData.logo" alt="" data-webLogo /> -->
             </div>
             <div class="info">
               <i class="fas fa-user"></i>
@@ -1000,46 +1128,176 @@ const verifyNumber = ref('')
             <!-- Frame -->
             <div id="inside-page" data-bopt>
               <div v-show="symbol === 'LEAHD3M'" class="cardBox">
-                <video
+                <!-- <div class="newMain">
+                  <img
+                    class="mainimg"
+                    src="@/assets/image/zw/gameicon.svg"
+                    alt=""
+                  />
+                  <div class="mainContent">
+                    <span class="randomNum">{{ chartValue }}</span>
+                    <span class="unit">Mbps</span>
+                  </div>
+                </div> -->
+                <!-- <video
                   src="@/assets/image/game_zw.mp4"
                   autoplay
                   loop
                   muted
                   playsinline
-                ></video>
+                ></video> -->
+                <!-- <img src="@/assets/image/game_zw-0.jpg" alt="" /> -->
                 <div class="containers">
-                  <div class="card">
-                    <div class="title">
-                      {{ $lang('單號') }} {{ betData.roundNo }}
+                  <div class="cardContainers">
+                    <div class="speedContainers">
+                      <div ref="chartRef" class="chart-container"></div>
                     </div>
-                    <div class="info">
-                      <div class="image">
-                        <img src="@/assets/image/gameIcon.png" alt="" />
-                      </div>
-                      <div class="text">
-                        <div class="name">{{ symbolChange(symbol) }}</div>
-                        <div class="value">{{ currentSelectSymbolPrice }}</div>
-                      </div>
-                    </div>
-                    <div class="time">
-                      <div class="text">{{ $lang('剩餘時間') }}</div>
-                      <div class="value">
-                        {{ socketCurrentRoundCountdown }}s
-                      </div>
-                    </div>
-                    <div class="box">
-                      <div class="mock1">
-                        <div class="text">
-                          {{ $lang('本日全球統計驗證碼數') }}
+                    <!-- <div class="chartRoundNo">
+                      {{ currentSelectSymbolPrice }}
+                    </div> -->
+                    <div class="speedtest">
+                      <div class="pingtext">
+                        <div class="pingleft">
+                          <div class="pingtop">
+                            <img src="@/assets/image/game/up.svg" alt="" />
+                            上傳
+                            <span>Mbps</span>
+                          </div>
+                          <div v-if="pingOpt.upAmount" class="pingval">
+                            {{ chartValue }}
+                          </div>
+                          <!-- <div
+                            v-else-if="!pingOpt.upAmount && pingOpt.downAmount"
+                            class="pingval"
+                          >
+                            ---
+                          </div> -->
+                          <div v-else class="pingval">---</div>
                         </div>
-                        <div class="value">{{ counting.mock1 }}</div>
-                      </div>
-                      <div class="mock2">
-                        <div class="text">
-                          {{ $lang('本日全球統計接收號碼數') }}
+                        <div class="pingleft">
+                          <div class="pingtop">
+                            <img src="@/assets/image/game/down.svg" alt="" />
+                            下載
+                            <span>Mbps</span>
+                          </div>
+                          <div v-if="pingOpt.downAmount" class="pingval">
+                            {{ chartValue }}
+                          </div>
+                          <!-- <div
+                            v-else-if="pingOpt.upAmount && !pingOpt.downAmount"
+                            class="pingval"
+                          >
+                            ---
+                          </div> -->
+                          <div v-else class="pingval">---</div>
                         </div>
-                        <div class="value">{{ counting.mock2 }}</div>
                       </div>
+                      <div class="betbox">
+                        Ping <span>ms</span>
+                        <img src="@/assets/image/game/up.svg" alt="" />
+                        <div>
+                          {{ pingOpt.upAmount || '---' }}
+                        </div>
+                        <img src="@/assets/image/game/down.svg" alt="" />
+                        <div>
+                          {{ pingOpt.downAmount || '---' }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="title">
+                        <span>{{ $lang('數據碼') }} {{ betData.roundNo }}</span>
+                        <span
+                          >{{ $lang('剩餘時間') }}
+                          {{ socketCurrentRoundCountdown }}s</span
+                        >
+                      </div>
+                      <div class="time">
+                        <div class="text">數據包</div>
+                        <div class="value">
+                          <div class="countdown-bar">
+                            <div
+                              class="progress"
+                              :style="{ width: `${progress}%` }"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="info">
+                        <div class="image">
+                          <img src="@/assets/image/gameIcon.png" alt="" />
+                        </div>
+                        <div class="text">
+                          <div class="name">WIFI測試</div>
+                          <div class="value">
+                            <!-- {{ currentSelectSymbolPrice }} -->
+                            {{ chartValue }}
+                          </div>
+                        </div>
+                        <div
+                          v-if="showOption(4) || showOption(5)"
+                          class="button-item row-2 mobileBtn"
+                        >
+                          <label
+                            v-if="showOption(4)"
+                            for="game-5"
+                            class="green"
+                            :class="
+                              betData.option.includes(4) ? 'selected' : ''
+                            "
+                            @click="addBetGameType(4)"
+                            >{{
+                              symbol === 'LEAHD3M'
+                                ? $lang('上傳')
+                                : $lang('做多')
+                            }}
+                            <!-- <span class="odds">{{
+                              gameOptionOdd(4)
+                            }}</span> -->
+                          </label>
+                          <label
+                            v-if="showOption(5)"
+                            for="game-6"
+                            class="red"
+                            :class="
+                              betData.option.includes(5) ? 'selected' : ''
+                            "
+                            @click="addBetGameType(5)"
+                            >{{
+                              symbol === 'LEAHD3M'
+                                ? $lang('下載')
+                                : $lang('做空')
+                            }}
+                            <!-- <span class="odds">{{
+                              gameOptionOdd(5)
+                            }}</span> -->
+                          </label>
+                        </div>
+                      </div>
+                      <!-- <div class="time">
+                        <div class="text">{{ $lang('剩餘時間') }}</div>
+                        <div class="value">
+                          {{ socketCurrentRoundCountdown }}s
+                        </div>
+                      </div> -->
+
+                      <!-- <div class="box">
+                        <div class="mock1">
+                          <div class="text">
+                            {{ $lang('本日全球統計數據碼') }}
+                          </div>
+                          <div class="value">{{ counting.mock1 }}</div>
+                        </div>
+                        <div class="mock2">
+                          <div class="text">
+                            {{ $lang('剩餘時間') }}
+                          </div>
+                          <div class="value">{{ counting.mock2 }}</div>
+                          <div class="value">
+                            {{ socketCurrentRoundCountdown }}s
+                          </div>
+                        </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -1064,9 +1322,7 @@ const verifyNumber = ref('')
                   $lang('路子')
                 }}</label>
                 <div class="analysis">
-                  <!-- @record -->
                   <div class="nav nav-tabs tab-page">
-                    <!-- @title -->
                     <div
                       data-toggle="tab"
                       href="#page"
@@ -1075,26 +1331,27 @@ const verifyNumber = ref('')
                     >
                       111
                     </div>
-                    <!-- @title -->
                   </div>
                   <div class="tab-content tab-box">
-                    <!-- @content -->
                     <div id="page-1" class="tab-box-item tab-pane fade show">
                       <div class="table">
-                        <!-- @list -->
                         <div class="cell -1" title="1">1</div>
-                        <!-- @list -->
                       </div>
                     </div>
-                    <!-- @content -->
                   </div>
-                  <!-- @record -->
                 </div>
                 <label for="analysis-control" class="analysis-off">
                   <i class="fas fa-sign-out-alt"></i>
                 </label>
               </div>
-              <div class="control-box">
+              <div
+                class="control-box"
+                :class="
+                  symbol === 'LEAHD3M'
+                    ? 'control-box-small-height'
+                    : 'control-box-height'
+                "
+              >
                 <div class="form">
                   <input
                     id="game-1"
@@ -1160,13 +1417,19 @@ const verifyNumber = ref('')
                     hidden
                   />
                   <div class="button-row">
-                    <div class="time-block">
+                    <div v-if="symbol !== 'LEAHD3M'" class="time-block">
                       <div class="game-uid">
-                        <h6>{{ $lang('單號') }}</h6>
+                        <h6 v-if="symbol === 'LEAHD3M'">
+                          {{ $lang('數據碼') }}
+                        </h6>
+                        <h6 v-else>{{ $lang('期數') }}</h6>
                         <b data-roundNum>: {{ betData.roundNo }}</b>
                       </div>
                       <div class="end-time">
-                        <h6>{{ $lang('剩餘時間') }}</h6>
+                        <h6 v-if="symbol === 'LEAHD3M'">
+                          {{ $lang('測試時間') }}
+                        </h6>
+                        <h6 v-else>{{ $lang('時間') }}</h6>
                         <div class="time-box gameTime">
                           <span id="time" class="pl-1">{{
                             socketCurrentRoundCountdown
@@ -1176,7 +1439,13 @@ const verifyNumber = ref('')
                       </div>
                     </div>
                     <div class="button-item-row">
-                      <div class="button-block">
+                      <div
+                        :class="
+                          symbol === 'LEAHD3M'
+                            ? 'button-block'
+                            : 'other-button-block'
+                        "
+                      >
                         <div
                           v-if="
                             showOption(0) ||
@@ -1238,7 +1507,7 @@ const verifyNumber = ref('')
                             @click="addBetGameType(4)"
                             >{{
                               symbol === 'LEAHD3M'
-                                ? $lang('發送')
+                                ? $lang('上傳')
                                 : $lang('做多')
                             }}
                             <!-- <span class="odds">{{
@@ -1252,7 +1521,7 @@ const verifyNumber = ref('')
                             @click="addBetGameType(5)"
                             >{{
                               symbol === 'LEAHD3M'
-                                ? $lang('接收')
+                                ? $lang('下載')
                                 : $lang('做空')
                             }}
                             <!-- <span class="odds">{{
@@ -1277,7 +1546,11 @@ const verifyNumber = ref('')
                         <div class="rank-box">
                           <input id="add-control" type="checkbox" hidden />
                           <div class="outerSelect" data-coinList hidden></div>
-                          <div class="add-box" data-quickSelect>
+                          <div
+                            v-if="symbol === 'LEAHD3M'"
+                            class="add-box"
+                            data-quickSelect
+                          >
                             <button
                               v-for="item in betAmountsList"
                               type="button"
@@ -1287,22 +1560,12 @@ const verifyNumber = ref('')
                             >
                               {{ betFormatNumber(item) }}
                             </button>
-                            <!-- <button
-                              type="button"
-                              class="game-coin"
-                              data-coin="100"
-                              @click="betData.amount = '100'"
-                            >
-                              100
-                            </button>
-                            <button
-                              type="button"
-                              class="game-coin"
-                              data-coin="100"
-                              @click="betData.amount = '1000'"
-                            >
-                              1k
-                            </button>
+                          </div>
+                          <div
+                            v-if="symbol === 'LEPBD3M'"
+                            class="add-box"
+                            data-quickSelect
+                          >
                             <button
                               type="button"
                               class="game-coin"
@@ -1326,7 +1589,7 @@ const verifyNumber = ref('')
                               @click="betData.amount = '1000000'"
                             >
                               1M
-                            </button> -->
+                            </button>
                           </div>
                           <div class="add-arrow">
                             <label for="add-control"
@@ -1485,8 +1748,8 @@ const verifyNumber = ref('')
                 <table>
                   <thead>
                     <tr>
-                      <th>{{ $lang('時間/幣種') }}</th>
-                      <th>{{ $lang('投注內容') }}</th>
+                      <th>{{ $lang('時間/類別') }}</th>
+                      <th>{{ $lang('內容') }}</th>
                       <th>{{ $lang('投注金額') }}</th>
                     </tr>
                   </thead>
@@ -1550,8 +1813,8 @@ const verifyNumber = ref('')
                 <table>
                   <thead>
                     <tr>
-                      <th>{{ $lang('時間/幣種') }}</th>
-                      <th>{{ $lang('投注內容') }}</th>
+                      <th>{{ $lang('時間/類別') }}</th>
+                      <th>{{ $lang('內容') }}</th>
                       <th>{{ $lang('投注金額') }}</th>
                       <th style="text-align: center">{{ $lang('輸贏') }}</th>
                     </tr>
@@ -1763,26 +2026,34 @@ const verifyNumber = ref('')
   padding: 0 5px;
   font-size: 16px;
 }
-@media screen and (max-width: 768px) {
+
+input {
+  margin: 0;
+}
+.speedContainers {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+}
+.chart-container {
+  position: absolute;
+  width: 350px;
+  height: 300px;
+  user-select: none;
+}
+@media screen and (max-width: 1024px) {
   .popup {
     padding: 0 10px;
     height: 92%;
   }
+  .speedContainers {
+    height: 225px;
+    /* position: absolute;
+    top: 40%;
+    transform: translateY(-60%); */
+  }
 }
-input {
-  margin: 0;
-}
-</style>
-
-<style>
-/* .el-input__wrapper {
-  background-color: #00000000;
-  border: 1px solid #00000000;
-  box-shadow: none;
-}
-.custom-input-border .el-input__inner {
-  border-color: red;
-} */
 </style>
 
 <style scoped lang="sass">
@@ -1790,9 +2061,10 @@ input {
   width: 100%
   height: calc(100% - 150px)
   position: relative
+  background-color: #26273b
   @media screen and (max-width: 1024px)
     height: 100%
-  video
+  video,img
     width: 100%
     height: 100%
     object-fit: cover
@@ -1802,85 +2074,214 @@ input {
     display: flex
     flex-direction: row
     justify-content: center
-    align-items: center
+    // align-items: center
     position: absolute
     top: 0
     right: 0
-    .card
+    overflow-y: auto
+    padding: 3% 0
+    @media screen and (max-width: 1024px)
+      padding-top: 0
+    .cardContainers
       max-width: 400px
       width: 100%
-      border-radius: 5px
-      box-shadow: 0 2px 5px rgba(0, 0, 0, .5)
-      background-color: rgba(255, 255, 255, 0.8)
-      .title
-        width: 100%
-        padding: 10px
-        font-size: 15px
-        font-weight: bold
-        color: #222
-        border-bottom: 1px solid #eee
-      .info
-        width: 100%
+      position: relative
+      @media screen and (max-width: 1024px)
+        height: calc( 100% - 58px )
         display: flex
-        flex-flow: row nowrap
-        justify-content: flex-start
-        align-items: center
-        border-bottom: 1px solid #eee
-        .image
-          width: 60px
-          height: 60px
-          img
+        flex-direction: column
+        // height: 100vh
+        justify-content: center
+        max-width: 1400px
+        padding-bottom: 180px
+      .chartRoundNo
+        position: absolute
+        top: 110px
+        left: 50%
+        transform: translateX(-50%)
+        font-size: 34px
+        z-index: 500
+        color: #fff
+        font-weight: 700
+      .card
+        max-width: 400px
+        width: 100%
+        border-radius: 5px
+        // box-shadow: 0 2px 5px rgba(0, 0, 0, .5)
+        // background-color: rgba(255, 255, 255, 0.8)
+        background-color: rgba(255, 255, 255, 1)
+        overflow: hidden
+        @media screen and (max-width: 1024px)
+          position: absolute
+          bottom: 0
+          max-width: 1400px
+          border-radius:0
+        //margin-top: 200px
+        .title
+          width: 100%
+          padding: 10px
+          font-size: 15px
+          font-weight: bold
+          color: #222
+          border-bottom: 1px solid #eee
+          display: flex
+          justify-content: space-between
+        .info
+          width: 100%
+          display: flex
+          flex-flow: row nowrap
+          justify-content: flex-start
+          align-items: center
+          border-bottom: 1px solid #eee
+          .image
             width: 60px
             height: 60px
-        .text
-          width: calc(100% - 60px)
-          display: flex
-          flex-direction: column
-          justify-content: center
-          align-items: flex-start
+            flex-shrink: 0
+            img
+              width: 60px
+              height: 60px
+          .text
+            width: 80px
+            display: flex
+            flex-direction: column
+            justify-content: center
+            align-items: flex-start
+            padding: 10px
+            flex-shrink: 0
+            .name
+              font-size: 14px
+              font-weight: 500
+              color: #333
+            .value
+              font-size: 20px
+              font-weight: bold
+              color: #333
+        .time
+          width: 100%
           padding: 10px
-          .name
-            font-size: 14px
-            font-weight: 500
-            color: #333
-          .value
-            font-size: 20px
-            font-weight: bold
-            color: #333
-      .time
-        width: 100%
-        padding: 10px
-        font-size: 12px
-        color: #666
-        text-align: center
-        border-bottom: 1px solid #eee
-        .text
-          font-size: 14px
-          font-weight: bold
-          color: #333
-        .value
-          font-size: 16px
-          font-weight: bold
-          color: #333
-      .box
-        width: 100%
-        display: flex
-        flex-direction: row
-        justify-content: space-between
-        align-items: center
-        .mock1, .mock2
-          width: 50%
+          font-size: 12px
+          color: #666
+          text-align: center
+          border-bottom: 1px solid #eee
           display: flex
-          flex-direction: column
-          justify-content: center
           align-items: center
-          padding: 10px
           .text
             font-size: 14px
             font-weight: bold
             color: #333
+            flex-shrink: 0
+            margin-right: 7px
           .value
             font-size: 16px
             font-weight: bold
             color: #333
+            width: 100%
+        .box
+          width: 100%
+          display: flex
+          flex-direction: row
+          justify-content: space-between
+          align-items: center
+          .mock1, .mock2
+            width: 50%
+            display: flex
+            flex-direction: column
+            justify-content: center
+            align-items: center
+            padding: 10px
+            .text
+              font-size: 14px
+              font-weight: bold
+              color: #333
+            .value
+              font-size: 16px
+              font-weight: bold
+              color: #333
+      .speedtest
+        padding: 5px 15px
+        background-color: #26273b
+        color: white
+        .pingtext
+          display: flex
+          justify-content: space-between
+          font-size: 14px
+          .pingleft
+            text-align: center
+            .pingtop
+              display: flex
+              align-items: center
+              justify-content: center
+            .pingval
+              font-size: 50px
+              font-weight: 100
+              @media screen and (max-width: 1024px)
+                font-size: 30px
+        .betbox
+          display: flex
+          align-items: center
+          justify-content: center
+          font-size: 14px
+        span
+          color: #9193a8
+          margin-left: 7px
+        img
+          width: 18px
+          margin-right: 8px
+          margin-left: 15px
+</style>
+<style scoped>
+.countdown-bar {
+  width: 100%;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: green;
+  transition: width 0.5s ease;
+}
+
+.marginStyle {
+  margin: 0 4px;
+}
+</style>
+<style scoped lang="sass">
+.mainimg
+  width: 20vh
+  height: 20vh
+  margin: 0 auto
+.mainContent
+  display: flex
+  flex-wrap: nowrap
+  align-items: flex-start
+  color: #d2d2d2
+  justify-content: center
+  margin-top: 3vh
+  .randomNum
+    font-size: 30vh
+    line-height: 33vh
+    @media (max-width: 720px)
+      font-size: 30vw
+      line-height: 33vw
+  .unit
+    font-size: 9vh
+    font-weight: 700
+    @media (max-width: 720px)
+      font-size: 9vw
+.mobileBtn
+  display: none !important
+  height: 71px !important
+  @media (max-width: 720px)
+    display: flex !important
+.selected
+  box-shadow: inset 0 0 0 45px rgba(0,0,0,.4) !important
+.control-box-small-height
+  height: 150px
+  @media screen and (max-width: 1024px)
+    height: 60px
+.control-box-height
+  height: 150px !important
 </style>

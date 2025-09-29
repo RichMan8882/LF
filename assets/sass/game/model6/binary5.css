@@ -473,7 +473,8 @@ main .main-left {
   height: 100%;
   border: 1px solid #d8d8d8;
   background-color: #fff;
-  position: relative
+  position: relative;
+  /* z-index: 999 */
 }
 
 main .main-left .left-title {
@@ -518,7 +519,7 @@ main .main-left .left-title span+span::before {
 main .main-left .itemRow {
   overflow-y: auto;
   height: calc(100dvh - 64px);
-  /* padding-top: 56px */
+  padding-top: 6px
 }
 
 @media screen and (min-width: 1025px) {
@@ -685,7 +686,7 @@ main .main-right .modal-link .info-item:hover {
 @media screen and (max-width: 1024px) {
   main .main-game {
       width:100%;
-      height: calc(100% - 43px)
+      /* height: calc(100% - 43px) */
   }
 
   main .main-block {
@@ -923,7 +924,7 @@ main .main-right .modal-link .info-item:hover {
 #inside-page .game-box {
   position: relative;
   /* height: calc(70% - 150px) */
-  height: calc(100dvh - 190px)
+  height: calc(100dvh - 210px)
 }
 
 @media screen and (max-width: 1024px) {
@@ -1454,7 +1455,9 @@ main .main-right .modal-link .info-item:hover {
   #inside-page .control-box {
       position:fixed;
       bottom: 0;
-      left: 0
+      left: 0;
+      height: 60px
+
   }
 }
 
@@ -1557,6 +1560,7 @@ main .main-right .modal-link .info-item:hover {
 #inside-page .button-item-row {
   width: 100%;
   height: calc(100% - 33px);
+  /* height: 100%; */
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-start;
@@ -1566,7 +1570,8 @@ main .main-right .modal-link .info-item:hover {
 @media screen and (max-width: 1024px) {
   #inside-page .button-item-row {
       flex-flow:row wrap;
-      height: calc(100% - 25px)
+      /* height: auto; */
+      height: calc(100% - 66px)
   }
 }
 
@@ -1576,13 +1581,25 @@ main .main-right .modal-link .info-item:hover {
   height: 100%;
   padding-top: 5px
 }
-
+.other-button-block{
+  width: 40%;
+  padding-right: 10px;
+  height: 100%;
+  padding-top: 5px
+}
 @media screen and (max-width: 1024px) {
   #inside-page .button-block {
+      display: none;
       width:100%;
       padding-right: 0;
       height: calc(100% - 40px);
       padding-bottom: 5px
+  }
+  .other-button-block{
+    width: 100%;
+    padding-right: 10px;
+    height: 100%;
+    padding-top: 5px
   }
 }
 
@@ -1690,9 +1707,10 @@ main .main-right .modal-link .info-item:hover {
 }
 
 #inside-page .button-item {
-  height: calc(50% - 2.5px);
+  height: 100%;
+  width: 100%;
   display: flex;
-  flex-flow: row wrap;
+  /* flex-flow: row wrap; */
   align-content: center;
   justify-content: center
 }
@@ -1702,7 +1720,7 @@ main .main-right .modal-link .info-item:hover {
 }
 
 #inside-page .button-item label {
-  flex: 1 1 100%;
+  /* flex: 1 1 100%; */
   -ms-flex: 1 1 100%;
   border-radius: 6px;
   font-size: 15px;
@@ -1733,7 +1751,7 @@ main .main-right .modal-link .info-item:hover {
 }
 
 #inside-page .button-item label.green,#inside-page .button-item label.red,#inside-page .button-item label.basis {
-  flex: 1 1 23%;
+  /* flex: 1 1 23%; */
   -ms-flex: 1 1 23%;
   position: relative;
   color: #fff
@@ -1758,11 +1776,17 @@ main .main-right .modal-link .info-item:hover {
 }
 
 #inside-page .button-item label.green {
-  background-image: linear-gradient(to bottom, #39D627 0%, #11A100 100%)
+  /* background-image: linear-gradient(to bottom, #39D627 0%, #11A100 100%); */
+  background-color: #a37dd0;
+  height: 100%;
+  aspect-ratio: 1 / 1
 }
 
 #inside-page .button-item label.red {
-  background-image: linear-gradient(to bottom, #FF5858 0%, #D10000 100%)
+  /* background-image: linear-gradient(to bottom, #FF5858 0%, #D10000 100%); */
+  background-color: #94dada;
+  height: 100%;
+  aspect-ratio: 1 / 1
 }
 
 #inside-page .button-item label.basis {
@@ -1794,12 +1818,12 @@ main .main-right .modal-link .info-item:hover {
   box-shadow: inset 0 0 0 30px rgba(0,0,0,.4)
 }
 
-#inside-page .control-box #game-5:checked~.button-row [for=game-5] {
-  box-shadow: inset 0 0 0 30px rgba(0,0,0,.4)
+#game-5:checked~.button-row [for=game-5] {
+  box-shadow: inset 0 0 0 45px rgba(0,0,0,.4)
 }
 
-#inside-page .control-box #game-6:checked~.button-row [for=game-6] {
-  box-shadow: inset 0 0 0 30px rgba(0,0,0,.4)
+#game-6:checked~.button-row [for=game-6] {
+  box-shadow: inset 0 0 0 45px rgba(0,0,0,.4)
 }
 
 #inside-page .control-box #game-7:checked~.button-row [for=game-7] {
